@@ -106,6 +106,7 @@ volumes: []
 volumeMounts: 
 - name: jenkins-home
   mountPath: "/var/jenkins_home"
+  storageSize: "100Gi"
 
 nodeSelector: {}
 

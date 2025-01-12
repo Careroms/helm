@@ -64,8 +64,8 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  {{- with .Values.volumes}}
-  {{- .range }}
+  {{- with .Values.volumeMounts }}
+  {{- range . }}
   volumeClaimTemplates:
     - metadata:
         name: {{ .name }}
@@ -73,6 +73,6 @@ spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            storage: {{ .Values.persistence.size | quote }}
-  {{- end }}          
+            storage: {{ .storageSize | quote }}
+  {{- end }}
   {{- end }}
