@@ -1,13 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "jenkins.fullname" . }}
   labels:
     {{- include "jenkins.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "jenkins.selectorLabels" . | nindent 6 }}
@@ -66,3 +64,15 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  {{- with .Values.volumeMounts }}
+  {{- range . }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .name }}
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: {{ .storageSize | quote }}
+  {{- end }}
+  {{- end }}
